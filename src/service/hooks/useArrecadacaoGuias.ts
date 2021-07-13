@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { api } from "../index";
 
-interface ArrecadacaoGuia {
+export interface ArrecadacaoGuia {
   id: number;
   data_emissao: Date;
   data_vencimento: Date;
@@ -9,15 +9,30 @@ interface ArrecadacaoGuia {
   valor: number;
   nome_devedor: string;
   cpf_devedor: string;
+  status_pagamento: string;
+  pixQrcode: {
+    txid_conciliacao_solicitante: string;
+    valor_original: number;
+    qrcode: string;
+    link_qrcode: string;
+    estado_solicitacao: string;
+    data_pagamento: Date;
+    codigo_pagamento: number;
+    valor_pagamento: number;
+    cpf_pagador: string;
+    cnpj_pagador: string;
+    nome_cliente_pagador: string;
+    texto_informativo_pagador: string;
+  };
   arrecadacao: {
     id: number;
     competencia: string;
-    cartorio: {
-      id: number;
-      nome: string;
-      cnpj: string;
-      cns: number;
-    };
+  };
+  cartorio: {
+    id: number;
+    nome: string;
+    cnpj: string;
+    cns: number;
   };
 }
 

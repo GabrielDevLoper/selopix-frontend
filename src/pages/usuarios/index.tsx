@@ -224,28 +224,6 @@ export default function UsuariosListagem() {
                             {usuario.id}
                           </Text>
                         </Link>
-
-                        <Modal
-                          closeOnOverlayClick={false}
-                          onClose={onClose}
-                          isOpen={isOpen}
-                          isCentered
-                        >
-                          <ModalOverlay bg="rgba(0, 0, 0, 0.2)" />
-                          <ModalContent>
-                            <ModalHeader>Detalhes do usuário</ModalHeader>
-                            <ModalCloseButton />
-                            <ModalBody>
-                              <Flex flexDir={"column"}>
-                                {/* <Text>Cartorio: {usuario ? usuario.cartorio.nome : null}</Text> */}
-                                <Text>CPF: {usuario.cpf}</Text>
-                              </Flex>
-                            </ModalBody>
-                            <ModalFooter>
-                              <Button onClick={onClose}>Close</Button>
-                            </ModalFooter>
-                          </ModalContent>
-                        </Modal>
                       </Box>
                     </Td>
                     <Td px={["2", "4", "6"]}>

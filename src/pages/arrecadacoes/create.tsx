@@ -7,6 +7,7 @@ import {
   HStack,
   SimpleGrid,
   useColorMode,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
@@ -16,39 +17,78 @@ import { Input } from "../../components/Form/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { api } from "../../service";
+import { useRouter } from "next/router";
 
-type CreateUserFormData = {
-  nome: string;
-  cpf: string;
-  senha: string;
-  confirmacao_senha: string;
+type CreateArrecadacaoGuiaFormData = {
+  nomeDevedor: string;
+  cpfDevedor: string;
+  descricaoSolicitacaoPagamento: string;
 };
 
-const createUserFormSchema = yup.object().shape({
-  nome: yup.string().required("Nome é obrigatório"),
-  cpf: yup.string().required("CPF é obrigatório"),
-  senha: yup
+const createArrecadacaoGuiaFormSchema = yup.object().shape({
+  nomeDevedor: yup.string().required("Nome é obrigatório"),
+  cpfDevedor: yup.string().required("CPF é obrigatório"),
+  descricaoSolicitacaoPagamento: yup
     .string()
-    .required("Senha é obrigatória")
-    .min(6, "No minímo 6 caracteres"),
-  confirmacao_senha: yup
-    .string()
-    .oneOf([null, yup.ref("senha")], "As senhas precisam ser iguais"),
+    .required("Descrição da solicitação do pagamento é obrigatória"),
 });
 
 export default function UsuarioCreate() {
   const { colorMode } = useColorMode();
+  const toast = useToast();
+  const { push } = useRouter();
 
   const { handleSubmit, formState, register } = useForm({
-    resolver: yupResolver(createUserFormSchema),
+    resolver: yupResolver(createArrecadacaoGuiaFormSchema),
   });
 
-  const handleCreateUser: SubmitHandler<CreateUserFormData> = async (
-    values
-  ) => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    console.log(values);
-  };
+  const handleCreateArrecadacaoGuia: SubmitHandler<CreateArrecadacaoGuiaFormData> =
+    async (values) => {
+      const { data } = await api.post(`/emitir-guia/61/1`, {
+        nomeDevedor: values.nomeDevedor,
+        cpfDevedor: values.cpfDevedor,
+        descricaoSolicitacaoPagamento: values.descricaoSolicitacaoPagamento,
+      });
+
+      if (data.id) {
+        const response = await api.get(`/gerar-relatorio-guia/${data.id}`, {
+          responseType: "arraybuffer",
+          headers: {
+            Accept: "application/pdf",
+          },
+        });
+
+        const blob = new Blob([response.data], { type: "application/pdf" });
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `${data.id}.pdf`;
+
+        toast({
+          title: "Está guia ja foi gerada",
+          description:
+            "Já existe uma guia da mesma gerada e ela continua vigente, feche esta notificão e o pdf da guia sera baixado",
+          status: "info",
+          duration: 10000,
+          isClosable: true,
+          position: "top",
+          onCloseComplete: () => link.click(),
+        });
+
+        return;
+      }
+
+      toast({
+        title: "Guia criada com sucesso",
+        description: "Sua arrecadacao guia foi criada.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+
+      push("/arrecadacoes");
+    };
 
   const { errors, isSubmitting } = formState;
 
@@ -61,7 +101,7 @@ export default function UsuarioCreate() {
 
         <Box
           as={"form"}
-          onSubmit={handleSubmit(handleCreateUser)}
+          onSubmit={handleSubmit(handleCreateArrecadacaoGuia)}
           flex={"1"}
           borderRadius={8}
           p={["6", "8"]}
@@ -76,44 +116,35 @@ export default function UsuarioCreate() {
           <VStack spacing={"4"}>
             <SimpleGrid minChildWidth={"240px"} spacing={["6", "8"]} w={"100%"}>
               <Input
-                name={"nome"}
-                label={"Nome completo"}
-                {...register("nome")}
-                error={errors.nome}
+                name={"nomeDevedor"}
+                label={"Nome completo devedor"}
+                {...register("nomeDevedor")}
+                error={errors.nomeDevedor}
                 placeholder="Insira seu nome completo"
               />
               <Input
-                name={"cpf"}
-                label={"CPF"}
-                {...register("cpf")}
-                error={errors.cpf}
+                name={"cpfDevedor"}
+                label={"CPF do devedor"}
+                {...register("cpfDevedor")}
+                error={errors.cpfDevedor}
                 placeholder="Insira seu cpf"
               />
             </SimpleGrid>
 
             <SimpleGrid minChildWidth={"240px"} spacing={["6", "8"]} w={"100%"}>
               <Input
-                name={"senha"}
-                type={"password"}
-                label={"Senha"}
-                {...register("senha")}
-                error={errors.senha}
-                placeholder="Insira sua senha"
-              />
-              <Input
-                name={"confirmacao_senha"}
-                type={"password"}
-                label={"Confirmação da senha"}
-                {...register("confirmacao_senha")}
-                error={errors.confirmacao_senha}
-                placeholder="Confirme sua senha"
+                name={"descricaoSolicitacaoPagamento"}
+                label={"Descrição de solicitação do pagamento"}
+                {...register("descricaoSolicitacaoPagamento")}
+                error={errors.descricaoSolicitacaoPagamento}
+                placeholder="Insira sua descrição"
               />
             </SimpleGrid>
           </VStack>
 
           <Flex mt={"8"} justify={"flex-end"}>
             <HStack spacing={"4"}>
-              <Link href={"/usuarios"} passHref>
+              <Link href={"/arrecadacoes"} passHref>
                 <Button
                   bg={"gray.500"}
                   color={"white"}
