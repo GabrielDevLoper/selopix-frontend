@@ -36,8 +36,7 @@ export interface ArrecadacaoGuia {
   };
 }
 
-interface getArrecadacaoGuiaResponse {
-  totalArrecadacoesGuias: number;
+export interface getArrecadacaoGuiaResponse {
   data: ArrecadacaoGuia[];
 }
 
@@ -45,10 +44,9 @@ interface getArrecadacaoGuiaResponse {
 async function getArrecadacoesGuias(
   page: number
 ): Promise<getArrecadacaoGuiaResponse> {
-  const { data } = await api.get(`/arrecadacoes-guias/listar`);
+  const { data, headers } = await api.get(`/arrecadacoes-guias/listar`);
 
   return {
-    totalArrecadacoesGuias: 466,
     data,
   };
 }

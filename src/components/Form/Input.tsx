@@ -1,3 +1,4 @@
+import { useColorMode } from "@chakra-ui/react";
 import {
   Input as InputChakra,
   FormLabel,
@@ -18,15 +19,17 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
   { name, error = null, label, ...rest },
   ref
 ) => {
+  const { colorMode } = useColorMode();
+
   return (
     <FormControl isInvalid={!!error}>
       {!!label && <FormLabel htmlFor={name}>{label}:</FormLabel>}
       <InputChakra
         name={name}
-        id={name}
         focusBorderColor="blue.500"
         variant="filled"
         size="lg"
+        bg={colorMode === "light" ? "gray.200" : "gray.900"}
         ref={ref}
         {...rest}
       />

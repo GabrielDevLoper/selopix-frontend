@@ -18,24 +18,21 @@ interface Usuario {
 }
 
 interface getUsuarioResponse {
-  totalUsuarios: number;
   data: Usuario[];
 }
 
 // requisição á api (fetch)
-async function getUsuarios(page: number): Promise<getUsuarioResponse> {
-  const { data } = await api.get(`/usuarios?pagina=${page}`);
+async function getUsuarios(page?: number): Promise<getUsuarioResponse> {
+  const { data } = await api.get(`/usuarios`);
 
-  console.log(data[0]);
   return {
-    totalUsuarios: 466,
     data,
   };
 }
 
 // conectando o fetch a api com o react query
-export function useUsuarios(page: number) {
-  return useQuery(["usuarios", page], () => getUsuarios(page), {
+export function useUsuarios(page?: number) {
+  return useQuery("usuarios", () => getUsuarios(), {
     staleTime: 1000 * 60 * 10, //10 minutos q os dados vao ficar sem atualizar
   });
 }

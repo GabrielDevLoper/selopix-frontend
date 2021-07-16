@@ -38,9 +38,10 @@ import Sidebar from "../../components/Sidebar";
 import { RiAddLine, RiEditLine } from "react-icons/ri";
 import { Pagination } from "../../components/Pagination";
 import { useUsuarios } from "../../service/hooks/useUsuarios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { queryClient } from "../../service/queryClient";
 import { api } from "../../service";
+import ReactTable from "../../components/ReactTable";
 
 interface Usuario {
   id: number;
@@ -58,10 +59,72 @@ interface Usuario {
 
 export default function UsuariosListagem() {
   const [page, setPage] = useState(1);
+  const [usuarioAtual, setUsuarioAtual] = useState<Usuario>();
+  const [tableData, setTableData] = useState([]);
+
   const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isLoading, data, error, isFetching } = useUsuarios();
 
-  const { isLoading, data, error, isFetching } = useUsuarios(page);
+  useEffect(() => {
+    setTableData(data?.data);
+  }, [data]);
+
+  const columns = [
+    // {
+    //   Header: "ID",
+    //   accessor: "id",
+    //   // eslint-disable-next-line react/display-name
+    //   Cell: (props) => (
+    //     <Box onClick={onOpen}>
+    //       <Link
+    //         color="blue.500"
+    //         onClick={() => setArrecadacaoAtual(props.row.original)}
+    //       >
+    //         <Text fontSize="sm" fontWeight="bold">
+    //           {props.value}
+    //         </Text>
+    //       </Link>
+    //     </Box>
+    //   ),
+    // },
+    {
+      Header: "ID",
+      accessor: "id",
+    },
+    {
+      Header: "NOME",
+      accessor: "nome",
+    },
+    {
+      Header: "CPF",
+      accessor: "cpf",
+    },
+    {
+      Header: "CARTÓRIO",
+      accessor: "cartorio.nome",
+    },
+    {
+      Header: "CNS",
+      accessor: "cns",
+    },
+
+    {
+      Header: "STATUS",
+      accessor: "ativo",
+      // eslint-disable-next-line react/display-name
+      Cell: (props) => (
+        <Badge
+          variant="subtle"
+          colorScheme={props.value ? "green" : "red"}
+          p="1"
+          borderRadius="6"
+        >
+          {props.value ? "Ativo" : "Inativo"}
+        </Badge>
+      ),
+    },
+  ];
 
   const isWideVersion = useBreakpointValue({
     base: true,
@@ -116,7 +179,7 @@ export default function UsuariosListagem() {
           </Flex>
 
           {isWideVersion ? (
-            isLoading ? (
+            isLoading || !tableData ? (
               <Flex justify={"center"}>
                 <Spinner />
               </Flex>
@@ -189,7 +252,7 @@ export default function UsuariosListagem() {
                 ))}
               </Accordion>
             )
-          ) : isLoading ? (
+          ) : isLoading || !tableData ? (
             <Flex justify={"center"}>
               <Spinner />
             </Flex>
@@ -198,80 +261,68 @@ export default function UsuariosListagem() {
               <Text>Falha ao obter os dados dos usuarios</Text>
             </Flex>
           ) : (
-            <Table colorScheme="blackAlpha">
-              <Thead>
-                <Tr>
-                  <Th>ID</Th>
-                  <Th>Nome</Th>
-                  {/*<Th>E-mail</Th>*/}
-                  <Th>CPF</Th>
-                  <Th w="8">Status</Th>
-                  {/* <Th w="8">Ações</Th> */}
-                </Tr>
-              </Thead>
+            // <Table colorScheme="blackAlpha">
+            //   <Thead>
+            //     <Tr>
+            //       <Th>ID</Th>
+            //       <Th>Nome</Th>
+            //       {/*<Th>E-mail</Th>*/}
+            //       <Th>CPF</Th>
+            //       <Th w="8">Status</Th>
+            //       {/* <Th w="8">Ações</Th> */}
+            //     </Tr>
+            //   </Thead>
 
-              <Tbody>
-                {data.data.map((usuario) => (
-                  <Tr key={usuario.id}>
-                    <Td px={["2", "4", "6"]}>
-                      <Box>
-                        <Link
-                          color="blue.500"
-                          onMouseEnter={() => handlePrefetchUser(usuario.id)}
-                          onClick={onOpen}
-                        >
-                          <Text fontSize="sm" fontWeight="bold">
-                            {usuario.id}
-                          </Text>
-                        </Link>
-                      </Box>
-                    </Td>
-                    <Td px={["2", "4", "6"]}>
-                      <Box>
-                        <Text fontSize="md">{usuario.nome}</Text>
-                      </Box>
-                    </Td>
-                    <Td px={["2", "4", "6"]}>
-                      <Box>
-                        <Text fontSize="md">{usuario.cpf}</Text>
-                      </Box>
-                    </Td>
-                    <Td px={["2", "4", "6"]}>
-                      <Box borderRadius={"4px"}>
-                        <Badge
-                          colorScheme={usuario.ativo ? "green" : "red"}
-                          p="1"
-                          borderRadius="6"
-                        >
-                          {usuario.ativo ? "Ativo" : "Inativo"}
-                        </Badge>
-                      </Box>
-                    </Td>
-                    {/* <Td px={["4", "4", "6"]}>
-                      <HStack>
-                        <Button
-                          as="a"
-                          cursor="pointer"
-                          size="md"
-                          fontSize="md"
-                          colorScheme="blue"
-                        >
-                          <Icon as={RiEditLine} />
-                        </Button>
-                    
-                      </HStack>
-                    </Td> */}
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
+            //   <Tbody>
+            //     {data.data.map((usuario) => (
+            //       <Tr key={usuario.id}>
+            //         <Td px={["2", "4", "6"]}>
+            //           <Box>
+            //             <Link
+            //               color="blue.500"
+            //               onMouseEnter={() => handlePrefetchUser(usuario.id)}
+            //               onClick={onOpen}
+            //             >
+            //               <Text fontSize="sm" fontWeight="bold">
+            //                 {usuario.id}
+            //               </Text>
+            //             </Link>
+            //           </Box>
+            //         </Td>
+            //         <Td px={["2", "4", "6"]}>
+            //           <Box>
+            //             <Text fontSize="md">{usuario.nome}</Text>
+            //           </Box>
+            //         </Td>
+            //         <Td px={["2", "4", "6"]}>
+            //           <Box>
+            //             <Text fontSize="md">{usuario.cpf}</Text>
+            //           </Box>
+            //         </Td>
+            //         <Td px={["2", "4", "6"]}>
+            //           <Box borderRadius={"4px"}>
+            //             <Badge
+            //               colorScheme={usuario.ativo ? "green" : "red"}
+            //               p="1"
+            //               borderRadius="6"
+            //             >
+            //               {usuario.ativo ? "Ativo" : "Inativo"}
+            //             </Badge>
+            //           </Box>
+            //         </Td>
+            //       </Tr>
+            //     ))}
+            //   </Tbody>
+            // </Table>
+
+            <ReactTable columnsHeader={columns} data={tableData} />
           )}
 
-          <Pagination
+          {/* <Pagination
             totalCountOfRegister={466}
             onPageChange={setPage}
             currentPage={page}
-          />
+          /> */}
         </Box>
       </Flex>
     </Box>
