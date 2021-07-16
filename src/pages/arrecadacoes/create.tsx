@@ -19,6 +19,9 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { api } from "../../service";
 import { useRouter } from "next/router";
+import { motion, AnimatePresence } from "framer-motion";
+
+const MotionBox = motion(Box);
 
 type CreateArrecadacaoGuiaFormData = {
   nomeDevedor: string;
@@ -98,73 +101,86 @@ export default function UsuarioCreate() {
 
       <Flex w={"100%"} my={"6"} maxW={1800} mx={"auto"} px={"6"}>
         <Sidebar />
+        <AnimatePresence>
+          <MotionBox
+            as={"form"}
+            onSubmit={handleSubmit(handleCreateArrecadacaoGuia)}
+            flex={"1"}
+            borderRadius={8}
+            p={["6", "8"]}
+            bg={colorMode === "light" ? "gray.300" : "gray.800"}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 2 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            <Heading size={"lg"} fontWeight={"normal"}>
+              Cadastro do usuário
+            </Heading>
 
-        <Box
-          as={"form"}
-          onSubmit={handleSubmit(handleCreateArrecadacaoGuia)}
-          flex={"1"}
-          borderRadius={8}
-          p={["6", "8"]}
-          bg={colorMode === "light" ? "gray.300" : "gray.800"}
-        >
-          <Heading size={"lg"} fontWeight={"normal"}>
-            Cadastro do usuário
-          </Heading>
+            <Divider my={"6"} borderColor={"gray.700"} />
 
-          <Divider my={"6"} borderColor={"gray.700"} />
-
-          <VStack spacing={"4"}>
-            <SimpleGrid minChildWidth={"240px"} spacing={["6", "8"]} w={"100%"}>
-              <Input
-                name={"nomeDevedor"}
-                label={"Nome completo devedor"}
-                {...register("nomeDevedor")}
-                error={errors.nomeDevedor}
-                placeholder="Insira seu nome completo"
-              />
-              <Input
-                name={"cpfDevedor"}
-                label={"CPF do devedor"}
-                {...register("cpfDevedor")}
-                error={errors.cpfDevedor}
-                placeholder="Insira seu cpf"
-              />
-            </SimpleGrid>
-
-            <SimpleGrid minChildWidth={"240px"} spacing={["6", "8"]} w={"100%"}>
-              <Input
-                name={"descricaoSolicitacaoPagamento"}
-                label={"Descrição de solicitação do pagamento"}
-                {...register("descricaoSolicitacaoPagamento")}
-                error={errors.descricaoSolicitacaoPagamento}
-                placeholder="Insira sua descrição"
-              />
-            </SimpleGrid>
-          </VStack>
-
-          <Flex mt={"8"} justify={"flex-end"}>
-            <HStack spacing={"4"}>
-              <Link href={"/arrecadacoes"} passHref>
-                <Button
-                  bg={"gray.500"}
-                  color={"white"}
-                  _hover={{ bg: "gray.700" }}
-                >
-                  Cancelar
-                </Button>
-              </Link>
-              <Button
-                type={"submit"}
-                isLoading={isSubmitting}
-                bg={"blue.500"}
-                color={"white"}
-                _hover={{ bg: "blue.700" }}
+            <VStack spacing={"4"}>
+              <SimpleGrid
+                minChildWidth={"240px"}
+                spacing={["6", "8"]}
+                w={"100%"}
               >
-                Salvar
-              </Button>
-            </HStack>
-          </Flex>
-        </Box>
+                <Input
+                  name={"nomeDevedor"}
+                  label={"Nome completo devedor"}
+                  {...register("nomeDevedor")}
+                  error={errors.nomeDevedor}
+                  placeholder="Insira seu nome completo"
+                />
+                <Input
+                  name={"cpfDevedor"}
+                  label={"CPF do devedor"}
+                  {...register("cpfDevedor")}
+                  error={errors.cpfDevedor}
+                  placeholder="Insira seu cpf"
+                />
+              </SimpleGrid>
+
+              <SimpleGrid
+                minChildWidth={"240px"}
+                spacing={["6", "8"]}
+                w={"100%"}
+              >
+                <Input
+                  name={"descricaoSolicitacaoPagamento"}
+                  label={"Descrição de solicitação do pagamento"}
+                  {...register("descricaoSolicitacaoPagamento")}
+                  error={errors.descricaoSolicitacaoPagamento}
+                  placeholder="Insira sua descrição"
+                />
+              </SimpleGrid>
+            </VStack>
+
+            <Flex mt={"8"} justify={"flex-end"}>
+              <HStack spacing={"4"}>
+                <Link href={"/arrecadacoes"} passHref>
+                  <Button
+                    bg={"gray.500"}
+                    color={"white"}
+                    _hover={{ bg: "gray.700" }}
+                  >
+                    Cancelar
+                  </Button>
+                </Link>
+                <Button
+                  type={"submit"}
+                  isLoading={isSubmitting}
+                  bg={"blue.500"}
+                  color={"white"}
+                  _hover={{ bg: "blue.700" }}
+                >
+                  Salvar
+                </Button>
+              </HStack>
+            </Flex>
+          </MotionBox>
+        </AnimatePresence>
       </Flex>
     </Box>
   );

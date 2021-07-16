@@ -31,7 +31,7 @@ import { ReactNode, ReactElement } from "react";
 
 interface ModalProps {
   children: ReactNode;
-  titleButton: string;
+  titleButton?: string;
   title: string;
   buttonElement: ReactElement;
 }

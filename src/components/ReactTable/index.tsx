@@ -48,7 +48,7 @@ import {
   useFilters,
   usePagination,
 } from "react-table";
-import { api } from "../../service";
+
 import ColumnFilter from "./columnFilter";
 import { Input } from "../Form/Input";
 import { Stack } from "@chakra-ui/react";
@@ -134,9 +134,9 @@ export default function Table({ data, columnsHeader }: TableProps) {
               {headerGroup.headers.map((column) => (
                 <Th key={column.id} {...column.getHeaderProps()}>
                   {column.render("Header")}
-                  <Box mt="2" ml="-1">
+                  <HStack mt="2" ml="-1">
                     {column.canFilter ? column.render("Filter") : null}
-                  </Box>
+                  </HStack>
                 </Th>
               ))}
             </Tr>

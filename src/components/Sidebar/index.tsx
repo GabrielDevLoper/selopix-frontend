@@ -8,6 +8,9 @@ import {
   DrawerHeader,
   DrawerBody,
   useColorMode,
+  Switch,
+  Button,
+  DrawerProps,
 } from "@chakra-ui/react";
 import SidebarNav from "./SidebarNav";
 import { useSidebarDrawer } from "../../contexts/SidebarDrawerContext";

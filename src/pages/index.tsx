@@ -1,4 +1,4 @@
-import { Flex, Button, VStack, Text } from "@chakra-ui/react";
+import { Flex, Button, VStack, Text, Box } from "@chakra-ui/react";
 import { Input } from "../components/Form/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -50,6 +50,7 @@ export default function Login() {
         flexDir="column"
       >
         <Logo fontSize={"60px"} />
+
         <Text fontWeight="bold" fontSize={"20px"} letterSpacing="tight">
           Acessar o sistema
         </Text>

@@ -29,18 +29,21 @@ import {
 import NextLink from "next/link";
 import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
-import { RiAddLine, RiEditLine } from "react-icons/ri";
+import ModalCustom from "../../components/Modal";
 
+import { RiAddLine, RiEditLine } from "react-icons/ri";
 import {
   useArrecadacaoGuias,
   ArrecadacaoGuia,
 } from "../../service/hooks/useArrecadacaoGuias";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactTable from "../../components/ReactTable";
 import { api } from "../../service";
 import { AiOutlineFilePdf, AiOutlineSearch } from "react-icons/ai";
-import { Input } from "../../components/Form/Input";
-import { SimpleGrid } from "@chakra-ui/react";
+
+import { motion, AnimatePresence } from "framer-motion";
+
+const MotionBox = motion(Box);
 
 export default function ArrecadacaosListagem() {
   const [page, setPage] = useState(1);
@@ -159,19 +162,16 @@ export default function ArrecadacaosListagem() {
         <Flex overflowX="auto" w="100%" my="6" maxWidth={1800} mx="auto" px="6">
           <Sidebar />
 
-          <Flex
-            w="100%"
-            my="6"
-            maxWidth={1800}
-            mx="auto"
-            px="6"
-            flexDir="column"
-          >
-            <Box
+          <AnimatePresence>
+            <MotionBox
               flex="1"
               borderRadius={8}
               bg={colorMode === "light" ? "gray.300" : "gray.800"}
               p="8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 2 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
             >
               <Flex
                 mb="8"
@@ -324,8 +324,8 @@ export default function ArrecadacaosListagem() {
               ) : (
                 <ReactTable columnsHeader={columns} data={tableData} />
               )}
-            </Box>
-          </Flex>
+            </MotionBox>
+          </AnimatePresence>
         </Flex>
       </Box>
 

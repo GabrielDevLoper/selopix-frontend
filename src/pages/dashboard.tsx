@@ -7,8 +7,12 @@ import {
   Text,
   theme,
   useColorMode,
+  VStack,
 } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
+import { motion, AnimatePresence, AnimateSharedLayout } from "framer-motion";
+
+const MotionBox = motion(Box);
 
 const Chart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -34,7 +38,7 @@ const options = {
   },
 
   tooltip: {
-    enabled: false,
+    enabled: true,
   },
   xaxis: {
     type: "datetime",
@@ -83,18 +87,25 @@ export default function Dashboard() {
           minChildWidth="320px"
           alignItems="flex-start"
         >
-          <Box
-            p={["6", "8"]}
-            bg={colorMode === "light" ? "gray.300" : "gray.800"}
-            borderRadius={8}
-            pb="4"
-          >
-            <Text fontSize="lg" mb="4">
-              Total Arrecadações
-            </Text>
-            {/* @ts-ignore-error */}
-            <Chart options={options} series={series} type="area" height={160} />
-          </Box>
+          <AnimatePresence>
+            <MotionBox
+              p={["6", "8"]}
+              bg={colorMode === "light" ? "gray.300" : "gray.800"}
+              borderRadius={8}
+              pb="4"
+            >
+              <Text fontSize="lg" mb="4">
+                Total Arrecadações
+              </Text>
+              {/* @ts-ignore-error */}
+              <Chart
+                options={options}
+                series={series}
+                type="area"
+                height={160}
+              />
+            </MotionBox>
+          </AnimatePresence>
 
           <Box
             p={["6", "8"]}
