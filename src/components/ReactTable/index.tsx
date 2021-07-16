@@ -47,6 +47,7 @@ import {
   useGlobalFilter,
   useFilters,
   usePagination,
+  useResizeColumns,
 } from "react-table";
 
 import ColumnFilter from "./columnFilter";
@@ -64,6 +65,9 @@ export default function Table({ data, columnsHeader }: TableProps) {
   const defaultColumn = useMemo(
     () => ({
       Filter: ColumnFilter,
+      minWidth: 30,
+      width: 150,
+      maxWidth: 400,
     }),
     []
   );
@@ -132,7 +136,7 @@ export default function Table({ data, columnsHeader }: TableProps) {
           {headerGroups.map((headerGroup) => (
             <Tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <Th key={column.id} {...column.getHeaderProps()}>
+                <Th w="10" key={column.id} {...column.getHeaderProps()}>
                   {column.render("Header")}
                   <HStack mt="2" ml="-1">
                     {column.canFilter ? column.render("Filter") : null}

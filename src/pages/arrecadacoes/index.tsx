@@ -59,6 +59,7 @@ export default function ArrecadacaosListagem() {
     {
       Header: "ID",
       accessor: "id",
+
       // eslint-disable-next-line react/display-name
       Cell: (props) => (
         <Box onClick={onOpen}>
@@ -353,7 +354,9 @@ export default function ArrecadacaosListagem() {
               <Flex justifyContent="center" alignItems="center" mt="20px">
                 <Button
                   leftIcon={<AiOutlineFilePdf />}
-                  colorScheme="blue"
+                  bg={"blue.500"}
+                  color={"white"}
+                  _hover={{ bg: "blue.700" }}
                   variant="solid"
                   onClick={() => handleGetPdfGuia(arrecadacaoAtual?.id)}
                   isLoading={loadingPDF}

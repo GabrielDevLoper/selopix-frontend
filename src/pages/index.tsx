@@ -6,6 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Logo from "../components/Header/Logo";
 import { useRouter } from "next/router";
 import { useColorMode } from "@chakra-ui/react";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
 
 type SignInFormData = {
   cpf: string;
@@ -18,19 +20,15 @@ const signInFormSchema = yup.object().shape({
 });
 
 export default function Login() {
+  const { signIn, isAuthenticated } = useContext(AuthContext);
   const { colorMode } = useColorMode();
-
-  const { push } = useRouter();
 
   const { handleSubmit, formState, register } = useForm({
     resolver: yupResolver(signInFormSchema),
   });
 
   const handleSignIn: SubmitHandler<SignInFormData> = async (values) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(values);
-
-    await push("/dashboard");
+    await signIn(values);
   };
 
   const { errors, isSubmitting } = formState;
@@ -86,7 +84,9 @@ export default function Login() {
         <Button
           type="submit"
           mt="6"
-          colorScheme="blue"
+          bg={"blue.500"}
+          color={"white"}
+          _hover={{ bg: "blue.700" }}
           size="lg"
           isLoading={isSubmitting}
         >
