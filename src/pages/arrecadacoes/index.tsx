@@ -59,7 +59,6 @@ export default function ArrecadacaosListagem() {
     {
       Header: "ID",
       accessor: "id",
-
       // eslint-disable-next-line react/display-name
       Cell: (props) => (
         <Box onClick={onOpen}>
@@ -77,10 +76,36 @@ export default function ArrecadacaosListagem() {
     {
       Header: "DATA EMISSÃO",
       accessor: "data_emissao",
+      // eslint-disable-next-line react/display-name
+      Cell: (props) => (
+        <Badge variant="subtle" colorScheme="blue" p="1" borderRadius="6">
+          {props.value}
+        </Badge>
+      ),
     },
     {
       Header: "DATA VENCIMENTO",
       accessor: "data_vencimento",
+      // eslint-disable-next-line react/display-name
+      Cell: (props) => (
+        <Badge
+          variant="subtle"
+          colorScheme={
+            props.value <
+            new Date().toLocaleDateString("pt-BR", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })
+              ? "red"
+              : "green"
+          }
+          p="1"
+          borderRadius="6"
+        >
+          {props.value}
+        </Badge>
+      ),
     },
     {
       Header: "VALOR",
