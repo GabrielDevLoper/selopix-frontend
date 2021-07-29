@@ -9,16 +9,16 @@ import { AuthContextProvider } from "../contexts/AuthContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <AuthContextProvider>
-      <QueryClientProvider client={queryClient}>
-        <ChakraProvider resetCSS theme={theme}>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider resetCSS theme={theme}>
+        <AuthContextProvider>
           <SidebarDrawerProvider>
             <Component {...pageProps} />
           </SidebarDrawerProvider>
-        </ChakraProvider>
-        <ReactQueryDevtools />
-      </QueryClientProvider>
-    </AuthContextProvider>
+        </AuthContextProvider>
+      </ChakraProvider>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
   );
 }
 

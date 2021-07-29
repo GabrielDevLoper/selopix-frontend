@@ -91,6 +91,19 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         perfis,
       } = response.data;
 
+      if(!token){
+        toast({
+          title: "Credenciais inválidas",
+          description: "Por favor revise as credenciais inseridas",
+          status: "error",
+          duration: 5000,
+          position: "top",
+          isClosable: true,
+        });
+
+        return ;
+      }
+
       setUsuario({
         cns,
         cpf,
@@ -111,8 +124,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       router.push("/dashboard");
     } catch (err) {
       toast({
-        title: "Credenciais inválidas",
-        description: "Por favor revise as crendenciais inseridas",
+        title: "Servidor interno",
+        description: "Por favor volte em outro momento, estamos em manuntenção",
         status: "error",
         duration: 5000,
         position: "top",
