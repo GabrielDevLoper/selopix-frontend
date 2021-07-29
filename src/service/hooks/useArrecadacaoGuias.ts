@@ -41,10 +41,8 @@ export interface getArrecadacaoGuiaResponse {
 }
 
 // requisição á api (fetch)
-async function getArrecadacoesGuias(
-  page: number
-): Promise<getArrecadacaoGuiaResponse> {
-  const { data, headers } = await api.get(`/arrecadacoes-guias/listar`);
+async function getArrecadacoesGuias(): Promise<getArrecadacaoGuiaResponse> {
+  const { data } = await api.get(`/arrecadacoes-guias/listar`);
 
   return {
     data,
@@ -52,8 +50,8 @@ async function getArrecadacoesGuias(
 }
 
 // conectando o fetch a api com o react query
-export function useArrecadacaoGuias(page: number) {
-  return useQuery(["arrecadacoes", page], () => getArrecadacoesGuias(page), {
+export function useArrecadacaoGuias() {
+  return useQuery("arrecadacoes", () => getArrecadacoesGuias(), {
     staleTime: 5000,
   });
 }

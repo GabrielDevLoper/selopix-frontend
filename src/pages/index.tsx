@@ -8,6 +8,9 @@ import { useRouter } from "next/router";
 import { useColorMode } from "@chakra-ui/react";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { motion, AnimatePresence } from "framer-motion";
+
+const MotionFlex = motion(Flex);
 
 type SignInFormData = {
   cpf: string;
@@ -34,12 +37,16 @@ export default function Login() {
   const { errors, isSubmitting } = formState;
 
   return (
-    <Flex
+    <MotionFlex
       w="100vw"
       h="100vh"
       alignItems="center"
       justifyContent="center"
       flexDir={"column"}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 2 }}
+      exit={{ opacity: 0 }}
+      transition={{ delay: 0.2, duration: 0.5 }}
     >
       <Flex
         alignItems="center"
@@ -93,6 +100,6 @@ export default function Login() {
           Entrar
         </Button>
       </Flex>
-    </Flex>
+    </MotionFlex>
   );
 }

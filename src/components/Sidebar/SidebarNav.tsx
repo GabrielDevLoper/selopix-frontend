@@ -20,9 +20,9 @@ export default function SidebarNav() {
         <NavLink href={"/arrecadacoes"} icon={BsCollection}>
           Arrecadações Guias
         </NavLink>
-        {/* <NavLink href={"/dashobard"} icon={BsCollection}>
-          Arrecadações Guias
-        </NavLink> */}
+        <NavLink href={"/tsnr/recolhimentos"} icon={BsCollection}>
+          Recolhimento
+        </NavLink>
       </NavSection>
     </VStack>
   );

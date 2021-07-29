@@ -26,6 +26,11 @@ type Cartorio = {
   cns: number;
 };
 
+type Perfis = {
+  id: number;
+  nome: string;
+};
+
 type Usuario = {
   id: number;
   nome: string;
@@ -33,6 +38,7 @@ type Usuario = {
   cns: string;
   email: string;
   cartorio?: Cartorio;
+  perfis: Perfis[];
 };
 
 export const AuthContext = createContext({} as AuthContextData);
@@ -51,7 +57,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       api
         .get("/usuario-logado")
         .then((response) => {
-          const { id, nome, cpf, cns, email, cartorio } = response.data;
+          const {
+            usuario: { id, nome, cpf, cns, email, cartorio },
+            perfis,
+          } = response.data;
 
           setUsuario({
             cns,
@@ -60,6 +69,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
             id,
             nome,
             cartorio,
+            perfis,
           });
         })
         .catch((error) => {
@@ -75,7 +85,11 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         senha,
       });
 
-      const { token, nome, email, cns, id, cartorio } = response.data;
+      const {
+        token,
+        usuario: { nome, email, cns, id, cartorio },
+        perfis,
+      } = response.data;
 
       setUsuario({
         cns,
@@ -84,6 +98,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         nome,
         email,
         cartorio,
+        perfis,
       });
 
       setCookie(undefined, "@selopix.token", token, {

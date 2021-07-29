@@ -27,19 +27,19 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import Header from "../../components/Header";
-import Sidebar from "../../components/Sidebar";
-import ModalCustom from "../../components/Modal";
+import Header from "../../../components/Header";
+import Sidebar from "../../../components/Sidebar";
+import ModalCustom from "../../../components/Modal";
 import { parseCookies } from "nookies";
 
 import { RiAddLine, RiEditLine } from "react-icons/ri";
 import {
   useArrecadacaoGuias,
   ArrecadacaoGuia,
-} from "../../service/hooks/useArrecadacaoGuias";
+} from "../../../service/hooks/useArrecadacaoGuias";
 import React, { useEffect, useState } from "react";
-import ReactTable from "../../components/ReactTable";
-import { api } from "../../service";
+import ReactTable from "../../../components/ReactTable";
+import { api } from "../../../service";
 import { AiOutlineFilePdf, AiOutlineSearch } from "react-icons/ai";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -48,7 +48,6 @@ import { useToast } from "@chakra-ui/react";
 const MotionBox = motion(Box);
 
 export default function ArrecadacaosListagem() {
-  const [page, setPage] = useState(1);
   const [loadingPDF, setLoadingPDF] = useState(false);
   const toast = useToast();
   const [arrecadacaoAtual, setArrecadacaoAtual] = useState<ArrecadacaoGuia>();

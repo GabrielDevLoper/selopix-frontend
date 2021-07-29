@@ -17,7 +17,7 @@ export default function Profile({ showProfileData = true }: ProfileProps) {
     <Flex align="center">
       {showProfileData && (
         <Box mr="4" textAlign="right">
-          <Text fontSize="md">{usuario?.nome}</Text>
+          <Text fontSize="md">{usuario.nome}</Text>
           <Text color="gray.300" fontSize="small">
             {usuario.cpf}
           </Text>
