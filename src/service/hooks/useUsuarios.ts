@@ -8,6 +8,11 @@ interface Cartorio {
   cns: number;
 }
 
+interface Perfil {
+  id: number;
+  nome: string;
+}
+
 interface Usuario {
   id: number;
   nome: string;
@@ -15,6 +20,7 @@ interface Usuario {
   cpf: string;
   ativo: boolean;
   cartorio: Cartorio;
+  perfis: Perfil[]
 }
 
 interface getUsuarioResponse {
