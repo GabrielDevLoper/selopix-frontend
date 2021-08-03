@@ -44,6 +44,7 @@ import { AiOutlineFilePdf, AiOutlineSearch } from "react-icons/ai";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@chakra-ui/react";
+import { useRecolhimentos } from "../../../service/hooks/useRecolhimento";
 
 const MotionBox = motion(Box);
 
@@ -55,7 +56,7 @@ export default function ArrecadacaosListagem() {
 
   const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isLoading, data, error, isFetching } = useArrecadacaoGuias();
+  const { isLoading, data, error, isFetching } = useRecolhimentos();
 
   const columns = [
     {
@@ -76,8 +77,8 @@ export default function ArrecadacaosListagem() {
       ),
     },
     {
-      Header: "DATA EMISSÃO",
-      accessor: "data_emissao",
+      Header: "COMPETÊNCIA",
+      accessor: "competencia",
       // eslint-disable-next-line react/display-name
       Cell: (props) => (
         <Badge variant="subtle" colorScheme="blue" p="1" borderRadius="6">
@@ -86,56 +87,31 @@ export default function ArrecadacaosListagem() {
       ),
     },
     {
-      Header: "DATA VENCIMENTO",
-      accessor: "data_vencimento",
-      // eslint-disable-next-line react/display-name
-      Cell: (props) => (
-        <Badge
-          variant="subtle"
-          colorScheme={
-            props.value <
-            new Date().toLocaleDateString("pt-BR", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            })
-              ? "red"
-              : "green"
-          }
-          p="1"
-          borderRadius="6"
-        >
-          {props.value}
-        </Badge>
-      ),
-    },
-    {
       Header: "VALOR",
       accessor: "valor",
-    },
-    {
-      Header: "COMPETÊNCIA",
-      accessor: "arrecadacao.competencia",
+      // eslint-disable-next-line react/display-name
+      Cell: (props) =>
+        new Intl.NumberFormat("pt-br", {
+          style: "currency",
+          currency: "BRL",
+        }).format(props.value),
     },
     {
       Header: "SERVENTIA",
       accessor: "cartorio.nome",
     },
     {
-      Header: "STATUS PAGAMENTO",
-      accessor: "status_pagamento",
-
+      Header: "STATUS",
+      accessor: "status_recolhimento",
       // eslint-disable-next-line react/display-name
       Cell: (props) => (
         <Badge
           variant="subtle"
-          colorScheme={
-            props.value === "PAGAMENTO PENDENTE" ? "yellow" : "green"
-          }
+          colorScheme={props.value === 1 ? "yellow" : "green"}
           p="1"
           borderRadius="6"
         >
-          {props.value}
+          {props.value === 3 ? "PAGO" : "PAGAMENTO PENDENTE"}
         </Badge>
       ),
     },
@@ -258,105 +234,106 @@ export default function ArrecadacaosListagem() {
                     <Text>Falha ao obter os dados dos arrecadacos</Text>
                   </Flex>
                 ) : (
-                  <Accordion allowMultiple>
-                    {data.data.map((arrecadacao) => (
-                      <AccordionItem key={arrecadacao.id}>
-                        <h2>
-                          <AccordionButton>
-                            <Box
-                              flex="1"
-                              textAlign="left"
-                              fontSize={["sm", "md"]}
-                            >
-                              {arrecadacao.id} - {arrecadacao.data_emissao}
-                            </Box>
-                            <AccordionIcon />
-                          </AccordionButton>
-                        </h2>
-                        <AccordionPanel pb={4}>
-                          <Flex flexDir={"column"}>
-                            <Flex flexDir={"row"}>
-                              <Text
-                                fontSize={"xs"}
-                                mr={"4px"}
-                                fontWeight={"bold"}
-                              >
-                                CPF:
-                              </Text>
-                              <Text fontSize={"xs"}>
-                                {arrecadacao.data_emissao}
-                              </Text>
-                            </Flex>
+                  // <Accordion allowMultiple>
+                  //   {data.data.map((arrecadacao) => (
+                  //     <AccordionItem key={arrecadacao.id}>
+                  //       <h2>
+                  //         <AccordionButton>
+                  //           <Box
+                  //             flex="1"
+                  //             textAlign="left"
+                  //             fontSize={["sm", "md"]}
+                  //           >
+                  //             {arrecadacao.id} - {arrecadacao.data_emissao}
+                  //           </Box>
+                  //           <AccordionIcon />
+                  //         </AccordionButton>
+                  //       </h2>
+                  //       <AccordionPanel pb={4}>
+                  //         <Flex flexDir={"column"}>
+                  //           <Flex flexDir={"row"}>
+                  //             <Text
+                  //               fontSize={"xs"}
+                  //               mr={"4px"}
+                  //               fontWeight={"bold"}
+                  //             >
+                  //               CPF:
+                  //             </Text>
+                  //             <Text fontSize={"xs"}>
+                  //               {arrecadacao.data_emissao}
+                  //             </Text>
+                  //           </Flex>
 
-                            <Flex
-                              flexDir={"row"}
-                              alignItems={"center"}
-                              mt={"10px"}
-                            >
-                              <Text
-                                fontSize={"xs"}
-                                mr={"4px"}
-                                fontWeight={"bold"}
-                              >
-                                Email:
-                              </Text>
-                              <Text fontSize={"xs"}>
-                                {arrecadacao.data_emissao}
-                              </Text>
-                            </Flex>
+                  //           <Flex
+                  //             flexDir={"row"}
+                  //             alignItems={"center"}
+                  //             mt={"10px"}
+                  //           >
+                  //             <Text
+                  //               fontSize={"xs"}
+                  //               mr={"4px"}
+                  //               fontWeight={"bold"}
+                  //             >
+                  //               Email:
+                  //             </Text>
+                  //             <Text fontSize={"xs"}>
+                  //               {arrecadacao.data_emissao}
+                  //             </Text>
+                  //           </Flex>
 
-                            <Flex flexDir={"row"} mt={"10px"}>
-                              <Text
-                                fontSize={"xs"}
-                                mr={"4px"}
-                                fontWeight={"bold"}
-                              >
-                                Ativo:
-                              </Text>
-                              <Text fontSize={"xs"}>
-                                <Badge
-                                  variant="solid"
-                                  colorScheme={
-                                    arrecadacao.status_guia ? "green" : "red"
-                                  }
-                                >
-                                  {arrecadacao.status_guia
-                                    ? "Ativo"
-                                    : "Inativo"}
-                                </Badge>
-                              </Text>
-                            </Flex>
+                  //           <Flex flexDir={"row"} mt={"10px"}>
+                  //             <Text
+                  //               fontSize={"xs"}
+                  //               mr={"4px"}
+                  //               fontWeight={"bold"}
+                  //             >
+                  //               Ativo:
+                  //             </Text>
+                  //             <Text fontSize={"xs"}>
+                  //               <Badge
+                  //                 variant="solid"
+                  //                 colorScheme={
+                  //                   arrecadacao.status_guia ? "green" : "red"
+                  //                 }
+                  //               >
+                  //                 {arrecadacao.status_guia
+                  //                   ? "Ativo"
+                  //                   : "Inativo"}
+                  //               </Badge>
+                  //             </Text>
+                  //           </Flex>
 
-                            <Flex
-                              flexDir={"row"}
-                              mt={"10px"}
-                              alignItems={"center"}
-                            >
-                              <Text
-                                fontSize={"xs"}
-                                mr={"4px"}
-                                fontWeight={"bold"}
-                              >
-                                Ações:
-                              </Text>
-                              <HStack>
-                                <Button
-                                  as="a"
-                                  cursor="pointer"
-                                  size={!isWideVersion ? "sm" : "xs"}
-                                  fontSize={!isWideVersion ? "sm" : "xs"}
-                                  colorScheme="blue"
-                                  mr={"4px"}
-                                >
-                                  <Icon as={RiEditLine} />
-                                </Button>
-                              </HStack>
-                            </Flex>
-                          </Flex>
-                        </AccordionPanel>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
+                  //           <Flex
+                  //             flexDir={"row"}
+                  //             mt={"10px"}
+                  //             alignItems={"center"}
+                  //           >
+                  //             <Text
+                  //               fontSize={"xs"}
+                  //               mr={"4px"}
+                  //               fontWeight={"bold"}
+                  //             >
+                  //               Ações:
+                  //             </Text>
+                  //             <HStack>
+                  //               <Button
+                  //                 as="a"
+                  //                 cursor="pointer"
+                  //                 size={!isWideVersion ? "sm" : "xs"}
+                  //                 fontSize={!isWideVersion ? "sm" : "xs"}
+                  //                 colorScheme="blue"
+                  //                 mr={"4px"}
+                  //               >
+                  //                 <Icon as={RiEditLine} />
+                  //               </Button>
+                  //             </HStack>
+                  //           </Flex>
+                  //         </Flex>
+                  //       </AccordionPanel>
+                  //     </AccordionItem>
+                  //   ))}
+                  // </Accordion>
+                  <h1>teste</h1>
                 )
               ) : isLoading || !tableData ? (
                 <Flex justify={"center"}>
