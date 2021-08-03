@@ -99,7 +99,7 @@ export default function Dashboard() {
           alignItems="flex-start"
         >
           <AnimatePresence>
-            <MotionBox
+            {/* <MotionBox
               p={["6", "8"]}
               bg={colorMode === "light" ? "gray.300" : "gray.800"}
               borderRadius={8}
@@ -113,16 +113,16 @@ export default function Dashboard() {
                 Total Arrecadações
               </Text>
               {/* @ts-ignore-error */}
-              <Chart
+            {/* <Chart
                 options={options}
                 series={series}
                 type="area"
                 height={160}
               />
-            </MotionBox>
+            </MotionBox>  */}
           </AnimatePresence>
 
-          <MotionBox
+          {/* <MotionBox
             p={["6", "8"]}
             bg={colorMode === "light" ? "gray.300" : "gray.800"}
             borderRadius={8}
@@ -136,8 +136,8 @@ export default function Dashboard() {
               Total Arrecadações
             </Text>
             {/* @ts-ignore-error */}
-            <Chart options={options} series={series} type="area" height={160} />
-          </MotionBox>
+          {/* <Chart options={options} series={series} type="area" height={160} />
+          </MotionBox>  */}
         </SimpleGrid>
       </MotionFlex>
     </Flex>
