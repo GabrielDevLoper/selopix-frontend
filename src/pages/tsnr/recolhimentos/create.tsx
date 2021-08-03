@@ -11,13 +11,13 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import Header from "../../components/Header";
-import Sidebar from "../../components/Sidebar";
-import { Input } from "../../components/Form/Input";
+import Header from "../../../components/Header";
+import Sidebar from "../../../components/Sidebar";
+import { Input } from "../../../components/Form/Input";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { api } from "../../service";
+import { api } from "../../../service";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
 
