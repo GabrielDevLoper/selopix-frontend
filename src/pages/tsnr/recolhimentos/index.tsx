@@ -77,6 +77,16 @@ export default function ArrecadacaosListagem() {
       ),
     },
     {
+      Header: "NOME",
+      accessor: "cartorio.nomeResponsavel",
+      width: 350,
+      minWidth: 250,
+    },
+    {
+      Header: "DOCUMENTO",
+      accessor: "cartorio.cpfResponsavel",
+    },
+    {
       Header: "COMPETÊNCIA",
       accessor: "competencia",
       // eslint-disable-next-line react/display-name
@@ -102,21 +112,23 @@ export default function ArrecadacaosListagem() {
     },
     {
       Header: "STATUS",
-      accessor: "status_recolhimento",
+      accessor: "status_recolhimento_tsnr.nome",
       // eslint-disable-next-line react/display-name
       Cell: (props) => (
         <Badge
           variant="subtle"
-          colorScheme={props.value === 1 ? "yellow" : "green"}
+          colorScheme={
+            props.value === "PAGAMENTO PENDENTE" ? "yellow" : "green"
+          }
           p="1"
           borderRadius="6"
         >
-          {props.value === 3 ? "PAGO" : "PAGAMENTO PENDENTE"}
+          {props.value}
         </Badge>
       ),
     },
     {
-      Header: "STATUS GUIA",
+      Header: "GERAR PDF",
       accessor: "status_guia",
       // eslint-disable-next-line react/display-name
       Cell: (props) => (
