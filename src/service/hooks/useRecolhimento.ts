@@ -6,9 +6,11 @@ interface Cartorio {
   nome: string;
   cnpj: string;
   cns: number;
+  nomeResponsavel: string;
+  cpfResponsavel: string;
 }
 
-interface Recolhimento {
+export interface Recolhimento {
   id: number;
   status_recolhimento: string;
   valor: number;
@@ -33,6 +35,6 @@ async function getRecolhimentos(): Promise<getRecolhimentoResponse> {
 // conectando o fetch a api com o react query
 export function useRecolhimentos() {
   return useQuery("recolhimentos", () => getRecolhimentos(), {
-    staleTime: 1000 * 60 * 10, // de 10 em 10 minutos os recolhimentos iram atualizar
+    staleTime: 5000, // de 5 em 5 segundos os recolhimentos iram atualizar
   });
 }

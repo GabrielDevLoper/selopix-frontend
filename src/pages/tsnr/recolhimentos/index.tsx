@@ -32,11 +32,8 @@ import Sidebar from "../../../components/Sidebar";
 import ModalCustom from "../../../components/Modal";
 import { parseCookies } from "nookies";
 
-import { RiAddLine, RiEditLine } from "react-icons/ri";
-import {
-  useArrecadacaoGuias,
-  ArrecadacaoGuia,
-} from "../../../service/hooks/useArrecadacaoGuias";
+import { RiAddLine } from "react-icons/ri";
+import { ArrecadacaoGuia } from "../../../service/hooks/useArrecadacaoGuias";
 import React, { useEffect, useState } from "react";
 import ReactTable from "../../../components/ReactTable";
 import { api } from "../../../service";
@@ -44,19 +41,29 @@ import { AiOutlineFilePdf, AiOutlineSearch } from "react-icons/ai";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useToast } from "@chakra-ui/react";
-import { useRecolhimentos } from "../../../service/hooks/useRecolhimento";
+import {
+  useRecolhimentos,
+  Recolhimento,
+} from "../../../service/hooks/useRecolhimento";
 
 const MotionBox = motion(Box);
 
 export default function ArrecadacaosListagem() {
   const [loadingPDF, setLoadingPDF] = useState(false);
-  const toast = useToast();
-  const [arrecadacaoAtual, setArrecadacaoAtual] = useState<ArrecadacaoGuia>();
+  const [loadingEmitirGuia, setLoadingEmitirGuia] = useState(false);
+  const [recolhimentoAtual, setRecolhimentoAtual] = useState<Recolhimento>();
   const [tableData, setTableData] = useState([]);
 
+  const { isLoading, data, error, isFetching } = useRecolhimentos();
+
+  const toast = useToast();
   const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isLoading, data, error, isFetching } = useRecolhimentos();
+
+  const isWideVersion = useBreakpointValue({
+    base: true,
+    lg: false,
+  });
 
   const columns = [
     {
@@ -67,7 +74,7 @@ export default function ArrecadacaosListagem() {
         <Box onClick={onOpen}>
           <Link
             color="blue.500"
-            onClick={() => setArrecadacaoAtual(props.row.original)}
+            onClick={() => setRecolhimentoAtual(props.row.original)}
           >
             <Text fontSize="sm" fontWeight="bold">
               {props.value}
@@ -79,8 +86,6 @@ export default function ArrecadacaosListagem() {
     {
       Header: "NOME",
       accessor: "cartorio.nomeResponsavel",
-      width: 350,
-      minWidth: 250,
     },
     {
       Header: "DOCUMENTO",
@@ -113,6 +118,7 @@ export default function ArrecadacaosListagem() {
     {
       Header: "STATUS",
       accessor: "status_recolhimento_tsnr.nome",
+      width: 8,
       // eslint-disable-next-line react/display-name
       Cell: (props) => (
         <Badge
@@ -127,31 +133,71 @@ export default function ArrecadacaosListagem() {
         </Badge>
       ),
     },
-    {
-      Header: "GERAR PDF",
-      accessor: "status_guia",
-      // eslint-disable-next-line react/display-name
-      Cell: (props) => (
-        <Badge
-          variant="subtle"
-          colorScheme={props.value ? "green" : "red"}
-          p="1"
-          borderRadius="6"
-        >
-          {props.value ? "Ativo" : "Inativo"}
-        </Badge>
-      ),
-    },
   ];
 
+  // este useEffect é obrigatório para o react query functionar em paralelo com o react table.
   useEffect(() => {
     setTableData(data?.data);
   }, [data]);
 
-  const isWideVersion = useBreakpointValue({
-    base: true,
-    lg: false,
-  });
+  async function emitirGuia(id_arrecadacao: number) {
+    try {
+      setLoadingEmitirGuia(true);
+      const { data } = await api.post(`/emitir-guia/${id_arrecadacao}/1`);
+      setLoadingEmitirGuia(false);
+
+      if (data.id) {
+        setLoadingPDF(true);
+
+        const response = await api.get(`/gerar-relatorio-guia/${data.id}`, {
+          responseType: "arraybuffer",
+          headers: {
+            Accept: "application/pdf",
+          },
+        });
+
+        setLoadingPDF(false);
+
+        const blob = new Blob([response.data], { type: "application/pdf" });
+        const link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        link.download = `${data.id}.pdf`;
+
+        toast({
+          title: "Está guia ja foi gerada",
+          description:
+            "Já existe uma guia da mesma gerada e ela continua vigente, feche esta notificão e o pdf da guia sera baixado",
+          status: "info",
+          duration: 10000,
+          isClosable: true,
+          position: "top",
+          onCloseComplete: () => link.click(),
+        });
+
+        return;
+      }
+
+      toast({
+        title: "Guia criada com sucesso",
+        description: "Sua arrecadacao guia foi criada.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    } catch (error) {
+      setLoadingEmitirGuia(false);
+
+      toast({
+        title: "Erro na geração da guia",
+        description: "Falha ao gerar arrecadação guia",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+    }
+  }
 
   async function handleGetPdfGuia(id_arrecadacao: number) {
     try {
@@ -377,24 +423,26 @@ export default function ArrecadacaosListagem() {
           <ModalBody>
             <Flex flexDir={"column"}>
               <Flex flexDir={"column"}>
-                <Text>Nome devedor: {arrecadacaoAtual?.nome_devedor}</Text>
-                <Text>CPF devedor: {arrecadacaoAtual?.cpf_devedor}</Text>
                 <Text>
-                  Competência: {arrecadacaoAtual?.arrecadacao?.competencia}
+                  Nome devedor: {recolhimentoAtual?.cartorio?.nomeResponsavel}
                 </Text>
-                <Text>Cartório: {arrecadacaoAtual?.cartorio?.nome}</Text>
+                <Text>
+                  CPF devedor: {recolhimentoAtual?.cartorio?.cpfResponsavel}
+                </Text>
+                <Text>Competência: {recolhimentoAtual?.competencia}</Text>
+                <Text>Cartório: {recolhimentoAtual?.cartorio?.nome}</Text>
               </Flex>
               <Flex justifyContent="center" alignItems="center" mt="20px">
                 <Button
-                  leftIcon={<AiOutlineFilePdf />}
+                  // leftIcon={<AiOutlineFilePdf />}
                   bg={"blue.500"}
                   color={"white"}
                   _hover={{ bg: "blue.700" }}
                   variant="solid"
-                  onClick={() => handleGetPdfGuia(arrecadacaoAtual?.id)}
-                  isLoading={loadingPDF}
+                  onClick={() => emitirGuia(recolhimentoAtual?.id)}
+                  isLoading={loadingEmitirGuia || loadingPDF}
                 >
-                  Gerar PDF
+                  Emitir Guia
                 </Button>
               </Flex>
             </Flex>
